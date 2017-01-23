@@ -56,10 +56,10 @@ Firebase 콘솔에서 프로젝트 초기화 코드(initialization code)를 가�
 
 # Firebase Realtime Database
 ## Realtime Events 목차
-[Value Events](#Value-Events) <br>
-[Child Events](#Child-Events)
+[value events](#value-events) <br>
+[child events](#child-events)
 
-#### [Value Events]
+#### value events
 객체, 데이터 등을 동기화시키는 데 좋습니다. 
 
 ```
@@ -101,4 +101,4 @@ database의 root로 접근하게 해주고, 객체의 child키를 생성합니�
 그 값을 얻고 싶으면 지금처럼 .val()함수를 호출합니다. 값이 객체라면 객체 전체를 동기화합니다. <br>
 만약에 객체의 한 value가 바뀌어도, 객체 전체를 update한다. 이를 state 동기화라고 합니다.
 
-#### [Child Events]
+#### child events

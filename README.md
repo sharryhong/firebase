@@ -102,3 +102,45 @@ database의 root로 접근하게 해주고, 객체의 child키를 생성합니�
 만약에 객체의 한 value가 바뀌어도, 객체 전체를 update한다. 이를 state 동기화라고 합니다.
 
 #### child events
+데이터 동기화를 미세하게 조절할 수 있습니다. 특히 list를 다룰 때 유용합니다. <br>
+어떤 요소가 add, remove, update 되었을 때 특정 child 이벤트에 동기화시키고 싶을 때 사용합니다.<br>
+
+Firebase Overview/Database에서 `object`객체 프로퍼티에 JSON 객체를 넣어봅니다. 
+```
+object
+  hobbies: { "coffee" : "coffee" }
+
+// 이렇게 하면 key가 coffee이고 값이 coffee인 JSON객체가 부여됩니다. 
+// 이렇게 리스트를 추가합니다.
+```
+
+js파일에서 
+```
+// child_added : 리스트에 자식이 추가될 때만 작동합니다. 
+// 처음에 모든 리스트가 동기화되며, 그 후엔 변한 부분만 동기화합니다. 
+dbRefList.on('child_added', snap => {
+
+  const li = document.createElement('li');
+  // 각 항목의 key name을 li의 id값으로 준다.
+  li.id = snap.key;  
+  li.innerText = snap.val();
+  ulList.appendChild(li);
+
+});
+
+// child_changed : 자식이 바뀔때만 작동  
+dbRefList.on('child_changed', snap => {
+
+  const liChanged = document.getElementById(snap.key);
+  liChanged.innerText = snap.val();
+
+});
+
+// child_changed : 자식이 삭제될 때만 작동  
+dbRefList.on('child_removed', snap => {
+
+  const liRemove = document.getElementById(snap.key);
+  liRemove.remove();
+
+});
+```

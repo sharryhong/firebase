@@ -12,19 +12,42 @@
 
   // get element
   const preObject = document.getElementById('object');
+  const ulList = document.getElementById('list');
 
   // database 참조를 만들어서 data를 실시간으로 동기화해보자.
   // create references 
   const dbRefObject = firebase.database().ref().child('object');
-  // ref()함수 : database의 root로 접근하게 해주고, 객체의 child키를 생성한다. 
-  // 그러면 필요한 값을 저장할 수 있다. 
-  // on메서드 : 가장 강력한 메서드로서 
+  const dbRefList = dbRefObject.child('hobbies');
+
+  // Sync object changes
   dbRefObject.on('value', snap => preObject.innerText = JSON.stringify(snap.val(), null, 3)); // 여백 3
-  // 첫 매개변수 : 이벤트 타입. 실시간 동기화를 어느 단계까지 할지를 정한다. 
-  // value : database의 변경이 있을 때 매번 콜백함수를 호출한다. 
-  // 두번째 매개변수 : 콜백함수
-  // snap : 콜백함수의 매개변수로서 '데이터 스냅샷'이라고 불린다. 
-  // 데이터 스냅샷은 key name, 자식요소 반복방식 등을 return한다. 
-  // 그 값을 얻고 싶으면 지금처럼 .val()함수를 호출한다. 값이 객체라면 객체 전체를 동기화한다. 
-  // 만약에 객체의 한 value가 바뀐다면, 객체 전체를 update한다. => state 동기화 
+
+  // Sync list changes
+  // child_added : 리스트에 자식이 추가될 때만 작동한다. 
+  // 처음에 모든 리스트가 동기화되며, 그 후엔 변한 부분만 동기화한다. 
+  dbRefList.on('child_added', snap => {
+
+    const li = document.createElement('li');
+    // 각 항목의 key name을 li의 id값으로 준다.
+    li.id = snap.key;  
+    li.innerText = snap.val();
+    ulList.appendChild(li);
+
+  });
+  
+  // child_changed : 자식이 바뀔때만 작동  
+  dbRefList.on('child_changed', snap => {
+
+    const liChanged = document.getElementById(snap.key);
+    liChanged.innerText = snap.val();
+
+  });
+
+  // child_changed : 자식이 삭제될 때만 작동  
+  dbRefList.on('child_removed', snap => {
+
+    const liRemove = document.getElementById(snap.key);
+    liRemove.remove();
+
+  });
 })();
